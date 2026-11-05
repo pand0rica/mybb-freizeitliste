@@ -1,0 +1,99 @@
+[size=x-large][b]Freizeitliste[/b][/size]
+[i]Version 1.0.0[/i] – Eine Liste der Freizeitmöglichkeiten deiner RPG-Welt, die Mitglieder selbst einreichen und das Team vor der Veröffentlichung prüft.
+
+[size=large][b]Worum geht's?[/b][/size]
+
+Wo trifft sich die Stadt zum Joggen, wann ist Chorprobe, wer leitet den Schachclub? In vielen RPG-Foren steckt so etwas in Szenen oder Listen, die irgendwann niemand mehr pflegt. Mit der Freizeitliste reichen Mitglieder Aktivitäten mit Ort, Zeit und Beschreibung selbst ein. Das Team gibt sie in der Moderation frei, und die Charaktere können sich danach als Teilnehmende eintragen – auf Wunsch mit eigener Rolle.
+
+[size=large][b]Highlights[/b][/size]
+
+[list]
+[*] Aktivitäten nach Kategorien sortiert auf einer eigenen Seite
+[*] Jede Einreichung und jede Änderung an Ansprechpersonen läuft über eine Freigabe-Warteschlange im ModCP
+[*] Teilnahme mit optionaler Rolle („Trainer*in", „Neu dabei" …)
+[*] Rote Hinweisbox auf der Startseite, sobald etwas auf Freigabe wartet
+[*] Rechte für Einreichen, Freigeben und Teilnahmelisten getrennt nach Benutzergruppen
+[/list]
+
+[size=large][b]Was das Plugin alles kann[/b][/size]
+
+[b]Für Mitglieder[/b]
+[list]
+[*][b]Freizeitliste[/b] – Alle freigegebenen Aktivitäten, gruppiert nach Kategorie, mit Ort, Zeit, Beschreibung und Ansprechpersonen. So sieht jede Person auf einen Blick, was in der Welt los ist. [i](freizeit.php)[/i]
+[*][b]Aktivität einreichen[/b] – Wer zu einer berechtigten Gruppe gehört, trägt oben auf der Seite Titel, Kategorie, Ort, Zeit und Beschreibung ein. Der Eintrag ist erst sichtbar, wenn das Team ihn freigegeben hat. [i](freizeit.php, Gruppen im ACP einstellbar)[/i]
+[*][b]Teilnehmen[/b] – Eingeloggt kannst du dich bei jeder freigegebenen Aktivität ein- und austragen und eine Rolle hinterlegen oder ändern. [i](freizeit.php)[/i]
+[*][b]Teilnahmeliste[/b] – Zeigt, wer bei einer Aktivität mitmacht. Welche Gruppen die Liste sehen dürfen, legt das Team fest. [i](freizeit.php)[/i]
+[/list]
+
+[b]Für Team & Moderation[/b]
+[list]
+[*][b]Freigabe-Warteschlange[/b] – Neue Einreichungen und Änderungen an Ansprechpersonen landen hier und werden mit einem Klick freigegeben oder abgelehnt. Abgelehnte Einreichungen werden samt Teilnehmenden und Ansprechpersonen gelöscht. [i](ModCP → Freizeitliste: Freigabe-Queue)[/i]
+[*][b]Ansprechpersonen verwalten[/b] – Pro Aktivität Accounts als Ansprechperson hinzufügen oder entfernen. Auch diese Änderungen gehen durch die Warteschlange, damit nichts ungeprüft live geht. [i](ModCP → Freizeitliste: Ansprechpersonen verwalten)[/i]
+[*][b]Hinweis auf der Startseite[/b] – Solange etwas auf Freigabe wartet, sieht das Team oben auf dem Index eine rote Box mit Link zur Warteschlange. [i](Startseite)[/i]
+[/list]
+
+[b]Für Administratoren[/b]
+[list]
+[*][b]Kategorien verwalten[/b] – Kategorien mit Name, Beschreibung und Reihenfolge anlegen, bearbeiten, löschen und umsortieren. [i](ACP → Konfiguration → Freizeitliste)[/i]
+[*][b]Rechte festlegen[/b] – Drei Gruppeneinstellungen für Einreichen, Freigeben und Teilnahmelisten. [i](ACP → Konfiguration → Einstellungen → Freizeitliste)[/i]
+[/list]
+
+[size=large][b]So sieht's aus[/b][/size]
+
+[img]https://raw.githubusercontent.com/pand0rica/mybb-freizeitliste/main/docs/screenshots/overview.png[/img]
+[i]Die Freizeitliste mit Einreichungsformular und Kategorien[/i]
+
+[img]https://raw.githubusercontent.com/pand0rica/mybb-freizeitliste/main/docs/screenshots/modcp-queue.png[/img]
+[i]Die Freigabe-Warteschlange im ModCP[/i]
+
+[img]https://raw.githubusercontent.com/pand0rica/mybb-freizeitliste/main/docs/screenshots/acp-categories.png[/img]
+[i]Kategorienverwaltung im ACP[/i]
+
+[size=large][b]Einstellungen[/b][/size]
+
+[list]
+[*][b]Gruppen mit Einreichungsrecht[/b] – Diese Gruppen dürfen neue Aktivitäten einreichen. [i](Standard: Administratoren)[/i]
+[*][b]Gruppen mit ModCP-Freigaben[/b] – Diese Gruppen sehen den Startseiten-Hinweis und dürfen freigeben, ablehnen und Ansprechpersonen ändern. [i](Standard: Administratoren)[/i]
+[*][b]Gruppen für Teilnahmelisten[/b] – Diese Gruppen sehen, wer bei einer Aktivität mitmacht. [i](Standard: Registrierte, Super-Moderatoren, Administratoren, Moderatoren)[/i]
+[/list]
+
+[size=large][b]Voraussetzungen[/b][/size]
+
+[list]
+[*] MyBB 1.8.x
+[*] PHP 7.4 oder 8.x
+[*] Keine weiteren Plugins nötig
+[/list]
+
+[size=large][b]Installation[/b][/size]
+
+[list=1]
+[*] Dateien in das MyBB-Stammverzeichnis kopieren (Ordnerstruktur beibehalten)
+[*] ACP → Konfiguration → Plugins → Freizeitliste → Installieren & aktivieren
+[*] ACP → Konfiguration → Einstellungen → Freizeitliste → Gruppenrechte festlegen
+[*] ACP → Konfiguration → Freizeitliste → mindestens eine Kategorie anlegen
+[*] Optional: einen Link auf [i]freizeit.php[/i] in die Navigation deines Themes setzen
+[/list]
+
+[size=large][b]Update[/b][/size]
+
+[list=1]
+[*] Neue Dateien hochladen und vorhandene überschreiben
+[*] ACP → Konfiguration → Plugins → Freizeitliste → Deaktivieren und wieder Aktivieren
+[/list]
+Einstellungen, Kategorien, Aktivitäten und Teilnahmen bleiben erhalten.
+
+[size=large][b]Grenzen & Ausblick[/b][/size]
+
+Ort und Zeit sind Freitextfelder – es gibt keinen Kalender und keine Erinnerungen. Freigegebene Aktivitäten können im Frontend nicht nachträglich bearbeitet werden. Wird eine Kategorie gelöscht, bleiben ihre Aktivitäten in der Datenbank, erscheinen aber nicht mehr in der Liste.
+
+[size=large][b]Download & Quellcode[/b][/size]
+
+&raquo; [url=https://github.com/pand0rica/mybb-freizeitliste]GitHub: pand0rica/mybb-freizeitliste[/url] – Änderungen im [url=https://github.com/pand0rica/mybb-freizeitliste/blob/main/CHANGELOG.md]Changelog[/url], Lizenz GPL-3.0
+
+[size=large][b]Unterstützung[/b][/size]
+
+<i class="cp cp-tea"></i> Wenn dir das Plugin gefällt, kannst du mir gerne einen Tee spendieren: [url=https://ko-fi.com/pand0rica]ko-fi.com/pand0rica[/url]
+
+[size=small]Fragen, Bugs oder Feature-Wünsche gerne als GitHub Issue melden oder hier im Thread.
+Ich freue mich, wenn ihr mir den Link dalasst, wo das Plugin verwendet wird.[/size]
