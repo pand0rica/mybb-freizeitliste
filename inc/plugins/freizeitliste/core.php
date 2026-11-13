@@ -313,13 +313,14 @@ class FreizeitlisteCore
             $active_id = (int)key($categories);
         }
 
-        $tabs_html = '<div class="tcat" style="display:flex; flex-wrap:wrap; gap:4px; padding:6px 6px 0; margin-bottom:10px;">';
+        // H4W theme: flat dark tabs with an orange accent on the active one.
+        $tabs_html = '<div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">';
         foreach($categories as $category_id => $category) {
             $is_active = ((int)$category_id === $active_id);
-            $tab_style = 'display:inline-block; padding:6px 14px; text-decoration:none; border:1px solid rgba(0,0,0,.25); border-bottom:0;'
-                .($is_active ? ' font-weight:bold; background:rgba(255,255,255,.35);' : ' opacity:.75;');
+            $tab_style = 'display:inline-block; padding:8px 16px; text-decoration:none; border-radius:3px 3px 0 0; border-bottom:2px solid '
+                .($is_active ? '#f0803c; background:rgba(255,255,255,.10); font-weight:bold; color:#fff;' : 'transparent; background:rgba(255,255,255,.04); opacity:.8;');
             $tabs_html .= '<a href="freizeit.php?cat='.(int)$category_id.'" style="'.$tab_style.'">'
-                .htmlspecialchars_uni($category['name']).' ('.count($category['entries']).')</a>';
+                .htmlspecialchars_uni($category['name']).' <span style="opacity:.6; font-size:.9em;">('.count($category['entries']).')</span></a>';
         }
         $tabs_html .= '</div>';
 
