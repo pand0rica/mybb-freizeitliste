@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- The overview on `freizeit.php` now shows the categories as tabs at the top; only the
+  selected category is displayed (`freizeit.php?cat=<id>`). Joining, leaving and changing a
+  role returns to the same tab.
+
+### Fixed
+- The pending-approval alert on the board index could appear twice when the plugin was
+  activated more than once. `activate()` now removes existing placeholders before inserting
+  it once, and `deactivate()` removes all of them. Deactivate/activate once to repair an
+  affected board.
+
 ### Changed (lifecycle)
 - Templates are created in `activate()` and removed in `deactivate()` (dev kit `debugging.md`
   #8) instead of `install()`/`uninstall()`. Updating the plugin now only needs

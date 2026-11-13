@@ -183,6 +183,7 @@ class FreizeitlisteCore
         }
 
         $uid = (int)$mybb->user['uid'];
+        $return_url = 'freizeit.php'.((int)$mybb->get_input('cat', MyBB::INPUT_INT) > 0 ? '?cat='.(int)$mybb->get_input('cat', MyBB::INPUT_INT) : '');
 
         // 'join' and 'role' share the same upsert logic; only the success message differs.
         if($action === 'join' || $action === 'role') {
@@ -197,12 +198,12 @@ class FreizeitlisteCore
                 ));
             }
             $message = $action === 'join' ? $lang->freizeit_success_joined : $lang->freizeit_success_role_updated;
-            redirect('freizeit.php', $message);
+            redirect($return_url, $message);
         }
 
         if($action === 'leave') {
             $db->delete_query('freizeit_participants', "entry_id = {$entry_id} AND user_id = {$uid}");
-            redirect('freizeit.php', $lang->freizeit_success_left);
+            redirect($return_url, $lang->freizeit_success_left);
         }
 
         error($lang->freizeit_error_invalid_action);
@@ -305,36 +306,52 @@ class FreizeitlisteCore
             return '<div class="trow1">'.$lang->freizeit_no_categories.'</div>';
         }
 
-        $result = '';
-        foreach($categories as $category) {
-            $category_name = htmlspecialchars_uni($category['name']);
-            $category_description = nl2br(htmlspecialchars_uni($category['description']));
-
-            $category_entries = '';
-            if(empty($category['entries'])) {
-                $category_entries = '<div class="trow1">'.$lang->freizeit_no_entries.'</div>';
-            } else {
-                foreach($category['entries'] as $entry) {
-                    $entry_title = htmlspecialchars_uni($entry['title']);
-                    $entry_ort = htmlspecialchars_uni($entry['ort']);
-                    $entry_zeit = htmlspecialchars_uni($entry['zeit']);
-                    $entry_beschreibung = nl2br(htmlspecialchars_uni($entry['beschreibung']));
-
-                    $entry_contacts = self::format_user_list($entry['contacts'], $lang->freizeit_no_contacts);
-                    if(self::can_view_participants()) {
-                        $entry_participants = self::build_participants_html($entry['participants']);
-                    } else {
-                        $entry_participants = $lang->freizeit_participants_hidden;
-                    }
-
-                    $entry_participation_form = self::build_participation_form((int)$entry['id']);
-
-                    eval('$category_entries .= "'.$templates->get('freizeit_entry_block').'";');
-                }
-            }
-
-            eval('$result .= "'.$templates->get('freizeit_category_block').'";');
+        // Active tab: ?cat=<id>, falls back to the first category.
+        $active_id = (int)$mybb->get_input('cat', MyBB::INPUT_INT);
+        if(!isset($categories[$active_id])) {
+            reset($categories);
+            $active_id = (int)key($categories);
         }
+
+        $tabs_html = '<div class="tcat" style="display:flex; flex-wrap:wrap; gap:4px; padding:6px 6px 0; margin-bottom:10px;">';
+        foreach($categories as $category_id => $category) {
+            $is_active = ((int)$category_id === $active_id);
+            $tab_style = 'display:inline-block; padding:6px 14px; text-decoration:none; border:1px solid rgba(0,0,0,.25); border-bottom:0;'
+                .($is_active ? ' font-weight:bold; background:rgba(255,255,255,.35);' : ' opacity:.75;');
+            $tabs_html .= '<a href="freizeit.php?cat='.(int)$category_id.'" style="'.$tab_style.'">'
+                .htmlspecialchars_uni($category['name']).' ('.count($category['entries']).')</a>';
+        }
+        $tabs_html .= '</div>';
+
+        $category = $categories[$active_id];
+        $category_name = htmlspecialchars_uni($category['name']);
+        $category_description = nl2br(htmlspecialchars_uni($category['description']));
+
+        $category_entries = '';
+        if(empty($category['entries'])) {
+            $category_entries = '<div class="trow1">'.$lang->freizeit_no_entries.'</div>';
+        } else {
+            foreach($category['entries'] as $entry) {
+                $entry_title = htmlspecialchars_uni($entry['title']);
+                $entry_ort = htmlspecialchars_uni($entry['ort']);
+                $entry_zeit = htmlspecialchars_uni($entry['zeit']);
+                $entry_beschreibung = nl2br(htmlspecialchars_uni($entry['beschreibung']));
+
+                $entry_contacts = self::format_user_list($entry['contacts'], $lang->freizeit_no_contacts);
+                if(self::can_view_participants()) {
+                    $entry_participants = self::build_participants_html($entry['participants']);
+                } else {
+                    $entry_participants = $lang->freizeit_participants_hidden;
+                }
+
+                $entry_participation_form = self::build_participation_form((int)$entry['id'], $active_id);
+
+                eval('$category_entries .= "'.$templates->get('freizeit_entry_block').'";');
+            }
+        }
+
+        $result = $tabs_html;
+        eval('$result .= "'.$templates->get('freizeit_category_block').'";');
 
         return $result;
     }
@@ -380,7 +397,7 @@ class FreizeitlisteCore
         return in_array($legacy, array('join', 'leave', 'role'), true) ? $legacy : '';
     }
 
-    public static function build_participation_form($entry_id)
+    public static function build_participation_form($entry_id, $category_id = 0)
     {
         global $mybb, $lang;
 
@@ -389,6 +406,7 @@ class FreizeitlisteCore
         }
 
         $entry_id = (int)$entry_id;
+        $category_id = (int)$category_id;
         $my_post_key = $mybb->post_code;
         $button_join = htmlspecialchars_uni($lang->freizeit_join);
         $button_leave = htmlspecialchars_uni($lang->freizeit_leave);
@@ -397,6 +415,7 @@ class FreizeitlisteCore
         return '<form action="freizeit.php" method="post" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">'
             .'<input type="hidden" name="my_post_key" value="'.$my_post_key.'" />'
             .'<input type="hidden" name="entry_id" value="'.$entry_id.'" />'
+            .'<input type="hidden" name="cat" value="'.$category_id.'" />'
             .'<input type="text" class="textbox" name="rolle" placeholder="'.htmlspecialchars_uni($lang->freizeit_role_placeholder).'" />'
             .'<input type="hidden" name="participation_action" value="1" />'
             .'<input type="submit" class="button" name="participation_join" value="'.$button_join.'" />'
@@ -696,6 +715,7 @@ class FreizeitlisteCore
                 .'<form action="modcp.php?action=freizeit_contacts" method="post">'
                 .'<input type="hidden" name="my_post_key" value="'.$mybb->post_code.'" />'
                 .'<input type="hidden" name="entry_id" value="'.$entry_id.'" />'
+            .'<input type="hidden" name="cat" value="'.$category_id.'" />'
                 .'<input type="hidden" name="contact_action" value="add" />'
                 .'<input type="text" class="textbox" name="username" /> '
                 .'<input type="submit" class="button" value="'.$lang->freizeit_queue_contact_add.'" />'
@@ -708,6 +728,7 @@ class FreizeitlisteCore
                     $contacts_content .= '<form action="modcp.php?action=freizeit_contacts" method="post" style="display:inline-block; margin-right:6px;">'
                         .'<input type="hidden" name="my_post_key" value="'.$mybb->post_code.'" />'
                         .'<input type="hidden" name="entry_id" value="'.$entry_id.'" />'
+            .'<input type="hidden" name="cat" value="'.$category_id.'" />'
                         .'<input type="hidden" name="contact_action" value="remove" />'
                         .'<input type="hidden" name="user_id" value="'.(int)$contact['user_id'].'" />'
                         .'<input type="submit" class="button" value="'.htmlspecialchars_uni($lang->freizeit_queue_contact_remove.': '.(string)$contact['username']).'" />'
