@@ -3,7 +3,7 @@
 A leisure/activity list for MyBB 1.8 RPG forums. Members of configured groups can
 submit leisure activities (with location, time, description and contacts). Every
 submission goes through a team approval queue in the ModCP before it becomes public.
-Approved activities are shown grouped by category on a dedicated front-end page, where
+Approved activities are shown on a dedicated front-end page with one tab per category, where
 members can add themselves as participants and set an optional role.
 
 ## Requirements

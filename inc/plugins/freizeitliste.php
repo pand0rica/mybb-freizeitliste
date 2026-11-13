@@ -135,14 +135,18 @@ function freizeitliste_activate()
     // activate()/deactivate() as an exact mirror pair (dev kit debugging.md #8/#21), so an
     // update only needs a deactivate/activate to refresh the templates.
     freizeitliste_insert_templates();
-    find_replace_templatesets('index', '#'.preg_quote('{$forums}').'#', '{$freizeit_red_alert}{$forums}');
+
+    // Idempotent: strip any existing placeholder(s) first so repeated activation (or a
+    // leftover from an earlier version) can never render the alert twice.
+    find_replace_templatesets('index', '#(\{\$freizeit_red_alert\})+#', '');
+    find_replace_templatesets('index', '#'.preg_quote('{$forums}').'#', '{$freizeit_red_alert}{$forums}', 1);
 }
 
 function freizeitliste_deactivate()
 {
     require_once MYBB_ROOT.'inc/adminfunctions_templates.php';
 
-    find_replace_templatesets('index', '#'.preg_quote('{$freizeit_red_alert}{$forums}').'#', '{$forums}');
+    find_replace_templatesets('index', '#(\{\$freizeit_red_alert\})+#', '');
     freizeitliste_remove_templates();
 }
 
